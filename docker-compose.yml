@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+
+  mariadb:
+    image: mariadb
+    container_name: server-mysql
+    environment:
+      - MYSQL_USER=medik
+      - MYSQL_PASSWORD=medik
+      - MYSQL_DATABASE=bookmedik
+      - MYSQL_ROOT_PASSWORD=1234
+    volumes:
+      - /opt/mysql:/var/lib/mysql
+
+  php-apache:
+    image: 4afromero/bookmedik:latest
+    container_name: bookmedik
+    ports:
+      - 80:80
+    links:
+      - mariadb
+    environment:
+      - MYSQL_USER=medik
+      - MYSQL_PASSWORD=medik
+      - MYSQL_DATABASE=bookmedik
+    volumes:
+      - /opt/apachelogs:/var/log/apache2
+    depends_on:
+      - mariadb
